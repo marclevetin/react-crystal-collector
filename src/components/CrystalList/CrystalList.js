@@ -5,9 +5,12 @@ import Crystal from '../Crystal';
 
 class CrystalList extends Component {
   render() {
-    const allTheCrystals = (this.props.numberCrystals) 
-                                ? Array( parseInt(this.props.numberCrystals) ).fill(1).map((crystal, index) => <Crystal key={index}/>)
-                                : "Nothing here"
+    const allTheCrystals = this.props.crystals.map((crystal) => <Crystal 
+                                                                    key={crystal.id} 
+                                                                    value={crystal.value}
+                                                                    handleClick={this.props.processFunction}
+                                                                />
+                                                    );
 
     return (
       <div>

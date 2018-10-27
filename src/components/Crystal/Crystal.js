@@ -4,7 +4,7 @@ class Crystal extends Component {
   render() {
     return (
       <div>
-        This is the Crystal
+        <p onClick={() => this.props.handleClick(this.props.value)}>This is the Crystal</p>
       </div>
     );
   }

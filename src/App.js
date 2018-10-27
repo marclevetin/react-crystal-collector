@@ -6,20 +6,38 @@ import CrystalList from './components/CrystalList';
 
 class App extends Component {
   state = {
-    numberCrystals: 6,
-    targetNumber: 100
+    targetNumber: 0,
+    crystals: [],
+    currentNumber: 0,
+    wins: 0,
+    losses: 0,
+    showRules: false
   }
 
   componentDidMount() {
-    this.generateTargetNumber()
+    this.beginGame();
   }
 
-  handleCrystalChange = (event) => {
-    const newValue = event.target.value;
+  beginGame = () => {
+    this.generateTargetNumber();
+    this.generateCrystals();
+  }
+
+  generateCrystals = () => {
+    const crystalArray = [];
+    
+    [1,2,3,4].forEach(number => {
+      const newTarget = Math.ceil( Math.random() * 12 );
+      const crystal = {}
+      crystal["id"] = number;
+      crystal["value"] = newTarget
+
+      crystalArray.push(crystal);
+    })
 
     this.setState({
-      numberCrystals: newValue
-    })
+      crystals: crystalArray
+    });
   }
 
   generateTargetNumber = () => {
@@ -29,25 +47,57 @@ class App extends Component {
     });
   }
 
+  processCrystalValue = (value) => {
+    const newNumber = this.state.currentNumber + value;
+
+    if (newNumber === this.state.targetNumber) {
+      this.setState({
+        wins: this.state.wins + 1,
+        currentNumber: 0
+      })
+
+      this.beginGame();
+    } else if (newNumber > this.state.targetNumber) {
+      this.setState({
+        losses: this.state.losses + 1,
+        currentNumber: 0
+      })
+      this.beginGame();
+    } else {
+      this.setState({
+        currentNumber: newNumber
+      });
+    }
+  }
+
+  showRules = () => {
+    this.setState({
+      showRules: !this.state.showRules
+    });
+  }
+
   render() {
+    const showRules = (this.state.showRules) ? `
+    Rules
+    Each crystal has a secret value.
+    Click crystals until your score matches the target value and win!
+    Your next game begins automatically.` 
+    : ''
     return (
       <div>
-        <input value={this.state.numberCrystals} onChange={this.handleCrystalChange}/>
         <h1>Crystal Collector</h1>
-        <button>Rules</button>
+        <button onClick={this.showRules}>Rules</button>
         <button>Win history</button>
-        <h2>Rules</h2>
-        <p>Each crystal has a secret value.</p>
-        <p>Click crystals until your score matches the target value and win!</p>
-        <p>Your next game begins automatically.</p>
+        {showRules}
         <h2>Win history</h2>
-        <p>Wins: 0</p>
-        <p>Losses: 0</p>
+        <p>Wins: {this.state.wins}</p>
+        <p>Losses: {this.state.losses}</p>
         <h2>Scores</h2>
-        <h3>Current: 0</h3>
+        <h3>Current: {this.state.currentNumber}</h3>
         <h3>Target: {this.state.targetNumber}</h3>
         <CrystalList 
-          numberCrystals = {this.state.numberCrystals}
+          crystals = {this.state.crystals}
+          processFunction = {this.processCrystalValue}
         />
       </div>
     );
