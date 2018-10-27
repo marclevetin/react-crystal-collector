@@ -1,25 +1,54 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+// components
+import CrystalList from './components/CrystalList';
+
 
 class App extends Component {
+  state = {
+    numberCrystals: 6,
+    targetNumber: 100
+  }
+
+  componentDidMount() {
+    this.generateTargetNumber()
+  }
+
+  handleCrystalChange = (event) => {
+    const newValue = event.target.value;
+
+    this.setState({
+      numberCrystals: newValue
+    })
+  }
+
+  generateTargetNumber = () => {
+    const newTarget = Math.floor( Math.random() * 100 ) + 20;
+    this.setState({
+      targetNumber: newTarget
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <input value={this.state.numberCrystals} onChange={this.handleCrystalChange}/>
+        <h1>Crystal Collector</h1>
+        <button>Rules</button>
+        <button>Win history</button>
+        <h2>Rules</h2>
+        <p>Each crystal has a secret value.</p>
+        <p>Click crystals until your score matches the target value and win!</p>
+        <p>Your next game begins automatically.</p>
+        <h2>Win history</h2>
+        <p>Wins: 0</p>
+        <p>Losses: 0</p>
+        <h2>Scores</h2>
+        <h3>Current: 0</h3>
+        <h3>Target: {this.state.targetNumber}</h3>
+        <CrystalList 
+          numberCrystals = {this.state.numberCrystals}
+        />
       </div>
     );
   }
